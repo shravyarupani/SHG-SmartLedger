@@ -1,0 +1,23 @@
+{% extends "core/base_admin_dashboard.html" %}
+
+{% block title %}SHG SmartLedger - Group Loans{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Group Loans</h2>
+</div>
+
+<p class="page-subtitle">Select a group to manage loan details.</p>
+
+<div class="members-list-container">
+    {% for gd in group_data %}
+    <a href="{% url 'core:admin_group_details' gd.group.id %}" class="member-list-card" style="justify-content: flex-start; text-decoration: none; display:block;">
+        <h3 class="card-title-simple" style="margin-bottom: 0.25rem;">{{ gd.group.name }}</h3>
+        <p class="detail-label" style="font-size: 14px; margin-bottom: 0.25rem;">Total: ₹{{ gd.total|floatformat:0 }} &middot; Outstanding: ₹{{ gd.outstanding|floatformat:0 }}</p>
+        <p class="detail-label" style="font-size: 12px;">{{ gd.member_count }} members</p>
+    </a>
+    {% empty %}
+    <div class="p-3 text-center">No groups found.</div>
+    {% endfor %}
+</div>
+{% endblock %}

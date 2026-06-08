@@ -1,0 +1,69 @@
+{% extends "core/base_dashboard.html" %}
+
+{% block title %}SHG SmartLedger - Home{% endblock %}
+
+{% block content %}
+<div class="welcome-banner">
+    <div class="sangham-name">{{ member.shg_group.name|default:"Yashoda Mahila Sangham" }}</div>
+    <div class="welcome-text">Welcome, {{ request.user.get_full_name|default:request.user.username }}</div>
+</div>
+
+<div class="dashboard-cards">
+    <!-- Current Due -->
+    <div class="card card-wide">
+        <div class="card-header alert-header">
+            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <h3 class="card-title">Current Due</h3>
+        </div>
+        <div class="card-body due-body">
+            <div class="detail-group">
+                <span class="detail-label">Amount to Pay</span>
+                <span class="detail-value large-value">₹{{ current_due_amount|default:"0" }}</span>
+            </div>
+            <div class="detail-group">
+                <span class="detail-label">Due Date</span>
+                <span class="detail-value text-bold">{% if current_due_date %}{{ current_due_date|date:"d M Y" }}{% else %}No Dues{% endif %}</span>
+            </div>
+            <div class="detail-group status-group">
+                <span class="detail-label">Status</span>
+                <span class="status-badge badge-pending">{{ due_status|default:"Pending" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cards-row">
+        <!-- Loan Remaining -->
+        <div class="card card-half">
+            <div class="card-header muted-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                    <line x1="2" y1="10" x2="22" y2="10"></line>
+                </svg>
+                <h3 class="card-title">Loan Remaining</h3>
+            </div>
+            <div class="card-body">
+                <span class="detail-value large-value">₹{{ loan_remaining|default:"0" }}</span>
+            </div>
+        </div>
+
+        <!-- My Contribution -->
+        <div class="card card-half">
+            <div class="card-header muted-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+                    <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+                    <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path>
+                </svg>
+                <h3 class="card-title">My Contribution</h3>
+            </div>
+            <div class="card-body">
+                <span class="detail-value large-value">₹{{ my_contribution|default:"0" }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

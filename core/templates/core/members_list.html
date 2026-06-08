@@ -1,0 +1,42 @@
+{% extends "core/base_leader_dashboard.html" %}
+
+{% block title %}SHG SmartLedger - Members List{% endblock %}
+
+{% block content %}
+<div class="page-top-nav">
+    <a href="{% url 'core:leader_home' %}" class="back-link-simple">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back
+    </a>
+</div>
+
+<div class="page-header">
+    <h2 class="page-title">Members List</h2>
+</div>
+
+<div class="members-list-container">
+    {% for member_item in members_data %}
+    <div class="member-list-card">
+        <div class="member-info-left">
+            <div class="member-avatar-small">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+            <span class="member-name fw-600">{{ member_item.profile.user.get_full_name|default:member_item.profile.user.username }} {% if member_item.profile.is_leader %}(Leader){% endif %}</span>
+        </div>
+        {% if member_item.has_active_loan %}
+        <span class="status-badge badge-active-loan">Active Loan</span>
+        {% else %}
+        <span class="status-badge badge-no-loan">No Active Loan</span>
+        {% endif %}
+    </div>
+    {% empty %}
+    <div class="p-3 text-center">No members found.</div>
+    {% endfor %}
+</div>
+{% endblock %}

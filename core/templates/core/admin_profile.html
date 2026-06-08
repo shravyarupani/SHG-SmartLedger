@@ -1,0 +1,50 @@
+{% extends "core/base_admin_dashboard.html" %}
+
+{% block title %}SHG SmartLedger - Profile{% endblock %}
+
+{% block content %}
+<div class="profile-header-large">
+    <div class="profile-avatar-large">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+    </div>
+    <div class="profile-name-large">{{ request.user.get_full_name|default:request.user.username }}</div>
+    <div class="profile-role-large">SHG Officer</div>
+</div>
+
+<div class="profile-sections-container">
+    <!-- Officer Details -->
+    <div class="card card-wide">
+        <h3 class="card-title-simple" style="margin-bottom: 1rem;">Officer Details</h3>
+        <div class="table-list">
+            <div class="table-row">
+                <span class="row-label">Staff ID</span>
+                <span class="row-value fw-600">ST-1024</span>
+            </div>
+            <div class="table-row">
+                <span class="row-label">Area</span>
+                <span class="row-value fw-600">Tirupati Rural</span>
+            </div>
+            <div class="table-row">
+                <span class="row-label">Phone</span>
+                <span class="row-value fw-600">9876543212</span>
+            </div>
+            <div class="table-row">
+                <span class="row-label">Email</span>
+                <span class="row-value fw-600">kavitha.shg@ngo.org</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="{% url 'core:role_selection' %}" class="logout-btn-large" style="margin-top: 1rem;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+    </svg>
+    Logout
+</a>
+{% endblock %}

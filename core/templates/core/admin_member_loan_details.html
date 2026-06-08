@@ -1,0 +1,81 @@
+{% extends "core/base_admin_dashboard.html" %}
+
+{% block title %}SHG SmartLedger - Member Loan Details{% endblock %}
+
+{% block content %}
+<div class="page-top-nav">
+    <a href="{% url 'core:admin_group_details' member.shg_group.id %}" class="back-link-simple">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to {{ member.shg_group.name }}
+    </a>
+</div>
+
+<div class="page-header">
+    <h2 class="page-title">{{ member.user.get_full_name|default:member.user.username }} - Loan Details</h2>
+</div>
+
+{% if active_loan %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="table-list">
+        <div class="table-row">
+            <span class="row-label">Loan Taken</span>
+            <span class="row-value fw-600">₹{{ active_loan.principal_amount }}</span>
+        </div>
+        <div class="table-row">
+            <span class="row-label">Interest</span>
+            <span class="row-value fw-600">₹{{ active_loan.total_interest|floatformat:0 }}</span>
+        </div>
+        <div class="table-row">
+            <span class="row-label">Total Payable</span>
+            <span class="row-value fw-600">₹{{ active_loan.total_payable|floatformat:0 }}</span>
+        </div>
+        <div class="table-row">
+            <span class="row-label">Paid</span>
+            <span class="row-value fw-600">₹{{ amount_paid|floatformat:0 }}</span>
+        </div>
+        <div class="table-row">
+            <span class="row-label">Remaining</span>
+            <span class="row-value fw-600">₹{{ remaining_balance|floatformat:0 }}</span>
+        </div>
+        <div class="table-row">
+            <span class="row-label">Loan Start</span>
+            <span class="row-value fw-600">{{ active_loan.start_date|date:"d M Y" }}</span>
+        </div>
+    </div>
+</div>
+
+<h3 class="card-title-simple">Ledger</h3>
+
+<div class="history-list" style="margin-bottom: 2rem;">
+    {% for emi in active_loan.emis.all|dictsort:"due_date" %}
+    <div class="history-item {% if forloop.last %}border-none{% endif %}">
+        <div class="history-info">
+            <span class="history-amount">₹{{ emi.amount|floatformat:0 }} - EMI</span>
+            <span class="history-date">{% if emi.is_paid %}{{ emi.paid_date|date:"d M Y" }}{% else %}{{ emi.due_date|date:"d M Y" }}{% endif %}</span>
+        </div>
+        {% if emi.is_paid %}
+        <span class="history-badge badge-paid" style="display:inline-flex; align-items:center; gap:4px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px; height:12px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Paid
+        </span>
+        {% else %}
+        <form action="" method="POST" style="margin: 0;">
+            {% csrf_token %}
+            <input type="hidden" name="emi_id" value="{{ emi.id }}" />
+            <button type="submit" class="mark-paid-btn" style="padding: 8px 16px; background: transparent; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--text-primary);" onclick="return confirm('Mark this EMI as paid?');">
+                Mark Paid
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card p-4 text-center">
+    <p>No active loan for this member.</p>
+</div>
+{% endif %}
+{% endblock %}

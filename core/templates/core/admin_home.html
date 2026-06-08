@@ -1,0 +1,25 @@
+{% extends "core/base_admin_dashboard.html" %}
+
+{% block title %}SHG SmartLedger - Admin Home{% endblock %}
+
+{% block content %}
+<!-- Welcome Banner -->
+<div class="welcome-banner">
+    <div class="sangham-name">SHG Administrative Officer</div>
+    <div class="welcome-text">Welcome, {{ request.user.get_full_name|default:request.user.username }}</div>
+</div>
+
+<h3 class="card-title-simple" style="margin-top: 1rem;">Your SHG Groups</h3>
+<div class="cards-row" style="flex-wrap: wrap;">
+    {% for gd in group_data %}
+    <a href="{% url 'core:admin_group_details' gd.group.id %}" style="text-decoration: none; color: inherit;" class="card-half">
+        <div class="card" style="min-width: 300px; height: 100%; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
+            <h3 class="card-title-simple" style="margin-bottom: 0.5rem;">{{ gd.group.name }}</h3>
+            <p class="detail-label" style="font-size: 14px;">Total: ₹{{ gd.total|floatformat:0 }} &middot; Outstanding: ₹{{ gd.outstanding|floatformat:0 }}</p>
+        </div>
+    </a>
+    {% empty %}
+    <div class="p-3">No groups found.</div>
+    {% endfor %}
+</div>
+{% endblock %}

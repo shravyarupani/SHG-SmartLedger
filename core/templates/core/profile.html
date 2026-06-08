@@ -1,0 +1,89 @@
+{% extends base_template|default:"core/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}SHG SmartLedger - Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar-large">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        </div>
+        <h2 class="profile-name">{{ request.user.get_full_name|default:request.user.username }}</h2>
+        <div class="profile-role">{% if member.is_leader %}Leader{% else %}Member{% endif %}</div>
+    </div>
+
+    <!-- Personal Information Card -->
+    <div class="profile-card">
+        <h3 class="profile-section-title">Personal Information</h3>
+        <div class="profile-info-grid">
+            <div class="info-row">
+                <span class="info-label">Mobile Number</span>
+                <span class="info-value fw-600">{{ member.phone }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Member ID</span>
+                <span class="info-value fw-600">{{ member.member_id|default:"N/A" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Role</span>
+                <span class="info-value fw-600">{% if member.is_leader %}Leader{% else %}Member{% endif %}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHG Details Card -->
+    <div class="profile-card">
+        <h3 class="profile-section-title">SHG Details</h3>
+        <div class="profile-info-grid">
+            <div class="info-row">
+                <span class="info-label">SHG Name</span>
+                <span class="info-value fw-600">{{ member.shg_group.name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Village</span>
+                <span class="info-value fw-600">{{ member.shg_group.village }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Leader</span>
+                <span class="info-value fw-600">{% if leader %}{{ leader.user.get_full_name|default:leader.user.username }}{% else %}N/A{% endif %}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Joining Date</span>
+                <span class="info-value fw-600">{{ member.shg_group.formed_date|date:"d M Y"|default:"N/A" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bank Details Card -->
+    <div class="profile-card">
+        <h3 class="profile-section-title">Bank Details</h3>
+        <div class="profile-info-grid">
+            <div class="info-row">
+                <span class="info-label">Bank Name</span>
+                <span class="info-value fw-600">{{ member.bank_name|default:"N/A" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Account No</span>
+                <span class="info-value fw-600">{{ member.account_no|default:"N/A" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">IFSC Code</span>
+                <span class="info-value fw-600">{{ member.ifsc_code|default:"N/A" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <a href="{% url 'core:role_selection' %}" class="logout-btn-large">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Logout
+    </a>
+</div>
+{% endblock %}

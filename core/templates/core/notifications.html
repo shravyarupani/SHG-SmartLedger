@@ -1,0 +1,44 @@
+{% extends base_template|default:"core/base_dashboard.html" %}
+
+{% block title %}SHG SmartLedger - Notifications{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Notifications</h2>
+</div>
+
+<div class="notifications-list">
+    {% for noti in notifications %}
+    <div class="notification-card {% if not noti.is_read %}unread{% endif %}">
+        <div class="noti-icon-box icon-{{ noti.icon_type|default:'info' }}">
+            {% if noti.icon_type == 'alert' %}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            {% elif noti.icon_type == 'wallet' %}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+            {% elif noti.icon_type == 'calendar' %}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            {% else %}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            {% endif %}
+        </div>
+        <div class="noti-content">
+            <div class="noti-header">
+                <h4 class="noti-title">{{ noti.title }}</h4>
+                <span class="noti-time">{{ noti.created_at|timesince }} ago</span>
+            </div>
+            <p class="noti-desc">{{ noti.message }}</p>
+        </div>
+    </div>
+    {% empty %}
+    <div class="p-3 text-center">No notifications found.</div>
+    {% endfor %}
+</div>
+{% endblock %}

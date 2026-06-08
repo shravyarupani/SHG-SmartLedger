@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHG SmartLedger - {{ role|title }} Login</title>
+    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="header">
+            <div class="logo-box">
+                <svg class="logo-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
+            <h1 class="title">SHG SmartLedger</h1>
+            <p class="subtitle">Digital record keeping for Self Help Groups</p>
+        </div>
+
+        <a href="{% url 'core:role_selection' %}" class="back-link">
+            &larr; Change Role
+        </a>
+
+        <div class="login-form-card">
+            <div class="logging-in-as">Logging in as <span>{{ role|title }}</span></div>
+
+            <form method="POST" action="{% url 'core:login' role %}" id="login-form">
+                {% csrf_token %}
+                
+                {% if messages %}
+                <div class="messages-container" style="margin-bottom: 1rem;">
+                    {% for message in messages %}
+                    <div style="padding: 0.75rem; border-radius: 8px; background-color: #FEE2E2; color: #991B1B; border: 1px solid #F87171; font-size: 0.875rem;">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="form-input" placeholder="9876543210" pattern="[0-9]{10}" required>
+                </div>
+
+                <div class="form-group" id="otp-group" style="display: none;">
+                    <label class="form-label" for="otp">Enter OTP</label>
+                    <div class="pwd-input-wrapper">
+                        <input type="password" id="otp" name="otp" class="form-input pwd-input" placeholder="1234" maxlength="4" pattern="[0-9]{1,4}">
+                    </div>
+                    <span class="input-hint">Use 123 for demo</span>
+                </div>
+
+                <button type="button" class="submit-btn" id="get-otp-btn">Get OTP</button>
+                <button type="submit" class="submit-btn" id="login-btn" style="display: none;">Verify & Login</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('get-otp-btn').addEventListener('click', function() {
+            var phone = document.getElementById('phone').value;
+            if (phone.length === 10) {
+                document.getElementById('otp-group').style.display = 'block';
+                document.getElementById('otp').setAttribute('required', 'required');
+                document.getElementById('login-btn').style.display = 'block';
+                this.style.display = 'none';
+                document.getElementById('otp').focus();
+            } else {
+                alert('Please enter a valid 10-digit phone number.');
+            }
+        });
+
+        document.getElementById('login-form').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (document.getElementById('otp-group').style.display === 'none') {
+                    document.getElementById('get-otp-btn').click();
+                } else if (document.getElementById('otp').value.length > 0) {
+                    this.submit();
+                }
+            }
+        });
+    </script>
+        </div>
+    </div>
+</body>
+</html>

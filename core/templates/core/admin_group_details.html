@@ -1,0 +1,57 @@
+{% extends "core/base_admin_dashboard.html" %}
+
+{% block title %}SHG SmartLedger - Group Details{% endblock %}
+
+{% block content %}
+<div class="page-top-nav">
+    <a href="{% url 'core:admin_group_loans' %}" class="back-link-simple">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        All Groups
+    </a>
+</div>
+
+<div class="page-header">
+    <h2 class="page-title">{{ group.name }}</h2>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <div class="table-list">
+        <div class="table-row">
+            <span class="row-label">Total Loan Amount</span>
+            <span class="row-value fw-600">₹{{ total|floatformat:0 }}</span>
+        </div>
+        <div class="table-row">
+            <span class="row-label">Outstanding</span>
+            <span class="row-value fw-600 status-text-running">₹{{ outstanding|floatformat:0 }}</span>
+        </div>
+    </div>
+</div>
+
+<h3 class="card-title-simple">Members</h3>
+
+<div class="members-list-container">
+    {% for md in members_data %}
+    <a href="{% url 'core:admin_member_loan_details' md.member.id %}" class="member-list-card" style="text-decoration: none;">
+        <div class="member-info-left" style="color: var(--text-primary);">
+            <div class="member-avatar-small">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+            <span class="member-name fw-600">{{ md.member.user.get_full_name|default:md.member.user.username }} {% if md.member.is_leader %}(Leader){% endif %}</span>
+        </div>
+        {% if md.has_active %}
+        <span class="status-badge badge-pending" style="color: #D97706;">Active Loan</span>
+        {% else %}
+        <span class="status-badge badge-success" style="color: #059669; background: #D1FAE5; border-color: #A7F3D0;">No Loan</span>
+        {% endif %}
+    </a>
+    {% empty %}
+    <div class="p-3 text-center">No members found.</div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends base_template|default:"core/base_dashboard.html" %}
+
+{% block title %}SHG SmartLedger - My Loans{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">My Loans</h2>
+</div>
+
+<!-- Tabs -->
+<div class="tabs-container">
+    <!-- Using radio buttons and CSS for tab switching without JS -->
+    <input type="radio" id="tab-loans" name="loan-tabs" class="tab-radio" checked>
+    <label for="tab-loans" class="tab-label">Loans</label>
+    
+    <input type="radio" id="tab-savings" name="loan-tabs" class="tab-radio">
+    <label for="tab-savings" class="tab-label">Savings</label>
+
+    <!-- Loans Content -->
+    <div class="tab-content" id="content-loans">
+        <!-- Current Loan -->
+        <div class="card mb-2">
+            <h3 class="card-title-simple">Current Loan</h3>
+            {% if active_loan %}
+            <div class="table-list">
+                <div class="table-row">
+                    <span class="row-label">Loan Amount</span>
+                    <span class="row-value fw-600">₹{{ active_loan.principal_amount }}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Interest Rate</span>
+                    <span class="row-value fw-600">{{ active_loan.interest_rate }}% per year</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Loan Duration</span>
+                    <span class="row-value fw-600">{{ active_loan.duration_months }} Months</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Total Interest</span>
+                    <span class="row-value fw-600">₹{{ active_loan.total_interest|floatformat:2 }}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Total Payable</span>
+                    <span class="row-value fw-600">₹{{ active_loan.total_payable|floatformat:2 }}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Monthly Installment</span>
+                    <span class="row-value fw-600">₹{{ monthly_installment|floatformat:2 }}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Amount Paid</span>
+                    <span class="row-value fw-600">₹{{ amount_paid|floatformat:2 }}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Remaining Balance</span>
+                    <span class="row-value fw-600">₹{{ remaining_balance|floatformat:2 }}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Last Payment Date</span>
+                    <span class="row-value fw-600">{% if last_payment_date %}{{ last_payment_date|date:"d M Y" }}{% else %}N/A{% endif %}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Next Due Date</span>
+                    <span class="row-value fw-600">{% if next_due_date %}{{ next_due_date|date:"d M Y" }}{% else %}N/A{% endif %}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Status</span>
+                    <span class="row-value status-text-running fw-600">{{ active_loan.status|title }}</span>
+                </div>
+            </div>
+            {% else %}
+            <div class="p-3 text-center">No active loans found.</div>
+            {% endif %}
+        </div>
+
+        <!-- Loan History -->
+        <div class="card">
+            <h3 class="card-title-simple">Loan History</h3>
+            <div class="history-list">
+                {% for loan in completed_loans %}
+                <div class="history-item">
+                    <div class="history-info">
+                        <div class="history-amount">₹{{ loan.principal_amount|floatformat:0 }}</div>
+                        <div class="history-date">{{ loan.start_date|date:"M Y" }} - Completed</div>
+                    </div>
+                    <div class="history-badge badge-completed">Completed</div>
+                </div>
+                {% empty %}
+                <div class="p-3 text-center">No loan history.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Savings Content -->
+    <div class="tab-content" id="content-savings">
+        <!-- Savings Summary -->
+        <div class="card mb-2">
+            <h3 class="card-title-simple">Savings Summary</h3>
+            <div class="table-list">
+                <div class="table-row">
+                    <span class="row-label">Total Savings</span>
+                    <span class="row-value fw-600">₹{{ total_savings|floatformat:2 }}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Monthly Contribution</span>
+                    <span class="row-value fw-600">₹{% if savings %}{{ savings.first.amount|floatformat:0 }}{% else %}0{% endif %}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Total Months Contributed</span>
+                    <span class="row-value fw-600">{{ months_contributed }}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Interest Earned</span>
+                    <span class="row-value fw-600">₹{{ interest_earned|floatformat:2 }}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Last Contribution Date</span>
+                    <span class="row-value fw-600">{% if savings %}{{ savings.first.month|date:"M Y" }}{% else %}N/A{% endif %}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Withdrawable Amount</span>
+                    <span class="row-value fw-600">₹{{ withdrawable_amount|floatformat:2 }}</span>
+                </div>
+                <div class="table-row">
+                    <span class="row-label">Status</span>
+                    <span class="row-value status-text-active fw-600">Active</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Savings History -->
+        <div class="card">
+            <h3 class="card-title-simple">Savings History</h3>
+            <div class="history-list">
+                {% for saving in savings|slice:":5" %}
+                <div class="history-item {% if forloop.last %}border-none{% endif %}">
+                    <div class="history-info">
+                        <div class="history-amount">₹{{ saving.amount|floatformat:0 }}</div>
+                        <div class="history-date">{{ saving.month|date:"M Y" }}</div>
+                    </div>
+                    <div class="history-badge badge-paid">Paid</div>
+                </div>
+                {% empty %}
+                <div class="p-3 text-center">No savings history.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
