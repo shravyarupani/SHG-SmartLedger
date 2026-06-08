@@ -1,5 +1,4 @@
 # SHG SmartLedger
-
 ## Overview
 A digital financial management platform for Self Help Groups (SHGs) to manage savings, loans, EMIs, meetings, and notifications transparently.
 
